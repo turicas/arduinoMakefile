@@ -11,9 +11,11 @@
 ###############################################################################
 
 #Sketch, board and IDE path configuration (in general change only this section)
-# The sketch filename without .pde (should be in ./)
+# Sketch filename without .pde (should be in the same directory of Makefile)
 SKETCH_NAME=Blink
-# The port Arduino is connected (use /dev/ttyUSB0 for Duemilanove)
+# The port Arduino is connected
+#  Uno, in GNU/linux: generally /dev/ttyACM0
+#  Duemilanove, in GNU/linux: generally /dev/ttyUSB0
 PORT=/dev/ttyACM0
 # The path of Arduino IDE
 ARDUINO_DIR=/home/alvaro/arduino-0022

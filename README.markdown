@@ -5,14 +5,14 @@ This project is just a simple Makefile for Arduino. There are some Makefiles in 
 
 It does:
 
-- Compiles your sketchbook, including the standard Arduino library
+- Compiles your sketch, including the standard Arduino library required
 - Merge all files into a .elf and them translate it to a .hex file
 - Upload the .hex to Arduino's flash memory
 
 
 **WARNING[0]:** it was tested only in Ubuntu GNU/Linux with Arduino Uno. Probably it'll work well in any GNU/Linux distribution or Mac OS with Arduino Duemilanove. Windows users: sorry, please use a better OS.
 
-**WARNING[1]:** by now the feature of compiling external libraries (even standard libraries and third-party libraries) is not implemented. So, if you have some `#include` in your project, probably it'll not work -- but don't be afraid, I'm working on this.
+**WARNING[1]:** by now the feature of compiling external libraries (even standard libraries and third-party libraries) is not implemented. So, if you have some `#include` in your project, probably it won't work -- but don't be afraid, I'm working on this.
 
 
 Dependencies
@@ -26,7 +26,7 @@ You need to have installed:
 - `make` -- to interpret the Makefile
 
 
-If you run Ubuntu or Debian, just type:
+If you run Ubuntu or Debian, just execute this recipe:
 
 
     sudo aptitude install gcc-avr avr-libc binutils-avr avrdude make
@@ -40,11 +40,12 @@ Usage
 
 The head of Makefile is self-explanatory, please read the comments and change these variables:
 
- 
-    #Sketch, board and IDE path configuration (in general change only this section)
-    # The sketch filename without .pde (should be in ./)
+
+    # Sketch filename without .pde (should be in the same directory of Makefile)
     SKETCH_NAME=Blink
-    # The port Arduino is connected (use /dev/ttyUSB0 for Duemilanove)
+    # The port Arduino is connected
+    #  Uno, in GNU/linux: generally /dev/ttyACM0
+    #  Duemilanove, in GNU/linux: generally /dev/ttyUSB0
     PORT=/dev/ttyACM0
     # The path of Arduino IDE
     ARDUINO_DIR=/home/alvaro/arduino-0022
