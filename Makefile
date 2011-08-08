@@ -42,17 +42,19 @@ AVRDUDE_CONF=/etc/avrdude.conf
 all:		clean compile upload
 
 clean:
+		@echo '*** Cleaning...'
 		rm -rf "$(TMP_DIR)"
 
 
 compile:
+		@echo '*** Compiling...'
 		mkdir $(TMP_DIR)
 		echo '#include "WProgram.h"' > "$(TMP_DIR)/$(SKETCH_NAME).cpp"
 		cat $(SKETCH_NAME).pde >> "$(TMP_DIR)/$(SKETCH_NAME).cpp"
-		#$(CPP) -MM -mmcu=$(MCU) -DF_CPU=$(DF_CPU) $(INCLUDE) $(CPP_FLAGS) "$(TMP_DIR)/$(SKETCH_NAME).cpp" -MF "$(TMP_DIR)/$(SKETCH_NAME).d" -MT "$(TMP_DIR)/$(SKETCH_NAME).o"
+		@#$(CPP) -MM -mmcu=$(MCU) -DF_CPU=$(DF_CPU) $(INCLUDE) $(CPP_FLAGS) "$(TMP_DIR)/$(SKETCH_NAME).cpp" -MF "$(TMP_DIR)/$(SKETCH_NAME).d" -MT "$(TMP_DIR)/$(SKETCH_NAME).o"
 		$(CPP) -c -mmcu=$(MCU) -DF_CPU=$(DF_CPU) $(INCLUDE) $(CPP_FLAGS) "$(TMP_DIR)/$(SKETCH_NAME).cpp" -o "$(TMP_DIR)/$(SKETCH_NAME).o"
 		
-		#Arduino core .c dependecies:
+		@#Arduino core .c dependecies:
 		$(CC) -c -mmcu=$(MCU) -DF_CPU=$(DF_CPU) $(INCLUDE) $(CC_FLAGS) $(ARDUINO_CORE)/pins_arduino.c -o $(TMP_DIR)/pins_arduino.o
 		$(CC) -c -mmcu=$(MCU) -DF_CPU=$(DF_CPU) $(INCLUDE) $(CC_FLAGS) $(ARDUINO_CORE)/WInterrupts.c -o $(TMP_DIR)/WInterrupts.o
 		$(CC) -c -mmcu=$(MCU) -DF_CPU=$(DF_CPU) $(INCLUDE) $(CC_FLAGS) $(ARDUINO_CORE)/wiring_analog.c -o $(TMP_DIR)/wiring_analog.o
@@ -61,7 +63,7 @@ compile:
 		$(CC) -c -mmcu=$(MCU) -DF_CPU=$(DF_CPU) $(INCLUDE) $(CC_FLAGS) $(ARDUINO_CORE)/wiring_pulse.c -o $(TMP_DIR)/wiring_pulse.o
 		$(CC) -c -mmcu=$(MCU) -DF_CPU=$(DF_CPU) $(INCLUDE) $(CC_FLAGS) $(ARDUINO_CORE)/wiring_shift.c -o $(TMP_DIR)/wiring_shift.o
 
-		#Arduino core .cpp dependecies:
+		@#Arduino core .cpp dependecies:
 		$(CPP) -c -mmcu=$(MCU) -DF_CPU=$(DF_CPU) $(INCLUDE) $(CPP_FLAGS) $(ARDUINO_CORE)/HardwareSerial.cpp -o $(TMP_DIR)/HardwareSerial.o
 		$(CPP) -c -mmcu=$(MCU) -DF_CPU=$(DF_CPU) $(INCLUDE) $(CPP_FLAGS) $(ARDUINO_CORE)/main.cpp -o $(TMP_DIR)/main.o
 		$(CPP) -c -mmcu=$(MCU) -DF_CPU=$(DF_CPU) $(INCLUDE) $(CPP_FLAGS) $(ARDUINO_CORE)/Print.cpp -o $(TMP_DIR)/Print.o
@@ -69,17 +71,22 @@ compile:
 		$(CPP) -c -mmcu=$(MCU) -DF_CPU=$(DF_CPU) $(INCLUDE) $(CPP_FLAGS) $(ARDUINO_CORE)/WMath.cpp -o $(TMP_DIR)/WMath.o
 		$(CPP) -c -mmcu=$(MCU) -DF_CPU=$(DF_CPU) $(INCLUDE) $(CPP_FLAGS) $(ARDUINO_CORE)/WString.cpp -o $(TMP_DIR)/WString.o
 
-		#TODO: compile libraries here
-		#TODO: use .d files to track dependencies and compile them -> change .c by -MM and use -MF to generate .d
+		@#TODO: compile libraries here
+		@#TODO: use .d files to track dependencies and compile them -> change .c by -MM and use -MF to generate .d
 
 		$(CC) -mmcu=$(MCU) -lm -Wl,--gc-sections -Os -o $(TMP_DIR)/$(SKETCH_NAME).elf $(TMP_DIR)/*.o
 		$(AVR_OBJCOPY) -O ihex -R .eeprom $(TMP_DIR)/$(SKETCH_NAME).elf $(TMP_DIR)/$(SKETCH_NAME).hex
+		@echo '*** Compiled successfully! \o/'
+
 
 reset:
+		@echo '*** Resetting...'
 		stty --file $(PORT) hupcl
 		sleep 0.1
 		stty --file $(PORT) -hupcl
-
+		
 
 upload:
+		@echo '*** Uploading...'
 		$(AVRDUDE) -q -V -p $(MCU) -C $(AVRDUDE_CONF) -c $(BOARD_TYPE) -b $(BAUD_RATE) -P $(PORT) -U flash:w:$(TMP_DIR)/$(SKETCH_NAME).hex:i
+		@echo '*** Done - enjoy your sketch!'
