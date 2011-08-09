@@ -15,6 +15,13 @@ It does:
 **WARNING[1]:** by now the feature of compiling external libraries (even standard libraries and third-party libraries) is not implemented. So, if you have some `#include` in your project, probably it won't work -- but don't be afraid, I'm working on this.
 
 
+
+Why another Makefile?
+---------------------
+
+The question was answered in the section above -- but I'm studying all the Makefiles for Arduino that I found in the Web and trying to implement the simplest way of doing it right. I've created a [**comprehensive list of Makefiles**](https://github.com/turicas/arduinoMakefile/blob/master/resources.markdown) and I'm categorizing them.
+
+
 Dependencies
 ------------
 
