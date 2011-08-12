@@ -70,10 +70,14 @@ Other Makefiles
 
 ### Makefiles for Windows
 
-
 - [Arduino Windows command-line](http://www.arduino.cc/playground/Code/WindowsCommandLine)
 - [ATTiny2313 for Windows](http://iamsuhasm.110mb.com/AVR%20C%20Dir/Makefile.txt)
 - [Arduino Makefile under cygwin](http://www.tinymicros.com/wiki/Makefile_For_Arduino_Under_Cygwin/Windows)
+
+
+### Makefiles for Mac OSX Xcode
+
+- [Building and uploading for Xcode](http://arduino.cc/forum/index.php/topic,49956.0.html)
 
 
 ### Not Categorized / To Categorize 
