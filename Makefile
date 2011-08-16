@@ -1,13 +1,23 @@
 ###############################################################################
 #                     Makefile for Arduino Duemilanove/Uno                    #
-#                  http://github.com/turicas/arduinoMakefile                  #
-#                                                                             #
-#                     Created by Álvaro Justen aka Turicas                    #
-#             alvarojusten [no-spam_AT_] gmail [_DOT_no-spam] com             #
+#             Copyright (C) 2011 Álvaro Justen <alvaro@justen.eng.br>         #
 #                         http://twitter.com/turicas                          #
 #                                                                             #
-#                               License: GPLv2                                #
-#                   http://www.gnu.org/licenses/gpl-2.0.html                  #
+# This project is hosted at GitHub: http://github.com/turicas/arduinoMakefile #
+#                                                                             #
+# This program is free software; you can redistribute it and/or               #
+#  modify it under the terms of the GNU General Public License                #
+#  as published by the Free Software Foundation; either version 2             #
+#  of the License, or (at your option) any later version.                     #
+#                                                                             #
+# This program is distributed in the hope that it will be useful,             #
+#  but WITHOUT ANY WARRANTY; without even the implied warranty of             #
+#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the              #
+#  GNU General Public License for more details.                               #
+#                                                                             #
+# You should have received a copy of the GNU General Public License           #
+#  along with this program; if not, please read the license at:               #
+#  http://www.gnu.org/licenses/gpl-2.0.html                                   #
 ###############################################################################
 
 #Sketch, board and IDE path configuration (in general change only this section)
