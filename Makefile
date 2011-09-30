@@ -20,6 +20,12 @@
 #  http://www.gnu.org/licenses/gpl-2.0.html                                   #
 ###############################################################################
 
+
+#check if ARDUINO_DIR is defined
+ifeq ($(strip $(ARDUINO_DIR)),)
+$(error "Please define ARDUINO_DIR in your enviroment. export ARDUINO_DIR=<path to ARDUINO IDE>")
+endif
+
 #Sketch, board and IDE path configuration (in general change only this section)
 # Sketch filename without .pde (should be in the same directory of Makefile)
 SKETCH_NAME=Blink
@@ -27,8 +33,6 @@ SKETCH_NAME=Blink
 #  Uno, in GNU/linux: generally /dev/ttyACM0
 #  Duemilanove, in GNU/linux: generally /dev/ttyUSB0
 PORT=/dev/ttyACM0
-# The path of Arduino IDE
-ARDUINO_DIR=/home/alvaro/arduino-0022
 # Boardy type: use "arduino" for Uno or "skt500v1" for Duemilanove
 BOARD_TYPE=arduino
 # Baud-rate: use "115200" for Uno or "19200" for Duemilanove
