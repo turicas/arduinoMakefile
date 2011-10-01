@@ -33,6 +33,7 @@ SKETCH_NAME=Blink
 #  Uno, in GNU/linux: generally /dev/ttyACM0
 #  Duemilanove, in GNU/linux: generally /dev/ttyUSB0
 PORT=/dev/ttyACM0
+has_port := $(PORT)
 # Boardy type: use "arduino" for Uno or "skt500v1" for Duemilanove
 BOARD_TYPE=arduino
 # Baud-rate: use "115200" for Uno or "19200" for Duemilanove
@@ -99,8 +100,11 @@ reset:
 		sleep 0.1
 		stty --file $(PORT) -hupcl
 		
-
 upload:
+ifeq ($(strip $(has_port)),)
 		@echo '*** Uploading...'
 		$(AVRDUDE) -q -V -p $(MCU) -C $(AVRDUDE_CONF) -c $(BOARD_TYPE) -b $(BAUD_RATE) -P $(PORT) -U flash:w:$(TMP_DIR)/$(SKETCH_NAME).hex:i
 		@echo '*** Done - enjoy your sketch!'
+else
+		@echo '*** WARNING Deploy port isnt ready'
+endif
