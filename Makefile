@@ -29,7 +29,7 @@ SKETCH_NAME=Blink
 PORT=/dev/ttyACM0
 # The path of Arduino IDE
 ARDUINO_DIR=/home/alvaro/arduino-0022
-# Boardy type: use "arduino" for Uno or "skt500v1" for Duemilanove
+# Boardy type: use "arduino" for Uno or "stk500v1" for Duemilanove
 BOARD_TYPE=arduino
 # Baud-rate: use "115200" for Uno or "19200" for Duemilanove
 BAUD_RATE=115200
