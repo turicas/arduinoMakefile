@@ -50,6 +50,7 @@ CPP_FLAGS=-g -Os -w -Wall -ffunction-sections -fdata-sections -fno-exceptions
 AVRDUDE_CONF=/etc/avrdude.conf
 CORE_C_FILES=pins_arduino WInterrupts wiring_analog wiring wiring_digital \
 	     wiring_pulse wiring_shift
+CORE_CPP_FILES=HardwareSerial main Print Tone WMath WString
 
 
 all:		clean compile upload
@@ -68,19 +69,18 @@ compile:
 		$(CPP) -c -mmcu=$(MCU) -DF_CPU=$(DF_CPU) $(INCLUDE) $(CPP_FLAGS) "$(TMP_DIR)/$(SKETCH_NAME).cpp" -o "$(TMP_DIR)/$(SKETCH_NAME).o"
 		
 		@#Arduino core .c dependecies:
-		for core_file in ${CORE_C_FILES}; do \
+		for core_c_file in ${CORE_C_FILES}; do \
 		    $(CC) -c -mmcu=$(MCU) -DF_CPU=$(DF_CPU) $(INCLUDE) \
-		          $(CC_FLAGS) $(ARDUINO_CORE)/$$core_file.c \
-			  -o $(TMP_DIR)/$$core_file.o; \
+		          $(CC_FLAGS) $(ARDUINO_CORE)/$$core_c_file.c \
+			  -o $(TMP_DIR)/$$core_c_file.o; \
 		done
 
 		@#Arduino core .cpp dependecies:
-		$(CPP) -c -mmcu=$(MCU) -DF_CPU=$(DF_CPU) $(INCLUDE) $(CPP_FLAGS) $(ARDUINO_CORE)/HardwareSerial.cpp -o $(TMP_DIR)/HardwareSerial.o
-		$(CPP) -c -mmcu=$(MCU) -DF_CPU=$(DF_CPU) $(INCLUDE) $(CPP_FLAGS) $(ARDUINO_CORE)/main.cpp -o $(TMP_DIR)/main.o
-		$(CPP) -c -mmcu=$(MCU) -DF_CPU=$(DF_CPU) $(INCLUDE) $(CPP_FLAGS) $(ARDUINO_CORE)/Print.cpp -o $(TMP_DIR)/Print.o
-		$(CPP) -c -mmcu=$(MCU) -DF_CPU=$(DF_CPU) $(INCLUDE) $(CPP_FLAGS) $(ARDUINO_CORE)/Tone.cpp -o $(TMP_DIR)/Tone.o
-		$(CPP) -c -mmcu=$(MCU) -DF_CPU=$(DF_CPU) $(INCLUDE) $(CPP_FLAGS) $(ARDUINO_CORE)/WMath.cpp -o $(TMP_DIR)/WMath.o
-		$(CPP) -c -mmcu=$(MCU) -DF_CPU=$(DF_CPU) $(INCLUDE) $(CPP_FLAGS) $(ARDUINO_CORE)/WString.cpp -o $(TMP_DIR)/WString.o
+		for core_cpp_file in ${CORE_CPP_FILES}; do \
+		    $(CPP) -c -mmcu=$(MCU) -DF_CPU=$(DF_CPU) $(INCLUDE) \
+		           $(CPP_FLAGS) $(ARDUINO_CORE)/$$core_cpp_file.cpp \
+			   -o $(TMP_DIR)/$$core_cpp_file.o; \
+		done
 
 		@#TODO: compile libraries here
 		@#TODO: use .d files to track dependencies and compile them -> change .c by -MM and use -MF to generate .d
