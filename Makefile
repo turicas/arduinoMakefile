@@ -21,8 +21,8 @@
 ###############################################################################
 
 #Sketch, board and IDE path configuration (in general change only this section)
-# Sketch filename without .pde (should be in the same directory of Makefile)
-SKETCH_NAME=Blink
+# Sketch filename (should be in the same directory of Makefile)
+SKETCH_NAME=Blink.pde
 # The port Arduino is connected
 #  Uno, in GNU/linux: generally /dev/ttyACM0
 #  Duemilanove, in GNU/linux: generally /dev/ttyUSB0
@@ -44,9 +44,12 @@ CC=/usr/bin/avr-gcc
 CPP=/usr/bin/avr-g++
 AVR_OBJCOPY=/usr/bin/avr-objcopy 
 AVRDUDE=/usr/bin/avrdude
-CC_FLAGS=-g -Os -w -Wall -ffunction-sections -fdata-sections -fno-exceptions -std=gnu99
+CC_FLAGS=-g -Os -w -Wall -ffunction-sections -fdata-sections -fno-exceptions \
+	 -std=gnu99
 CPP_FLAGS=-g -Os -w -Wall -ffunction-sections -fdata-sections -fno-exceptions
 AVRDUDE_CONF=/etc/avrdude.conf
+CORE_C_FILES=pins_arduino WInterrupts wiring_analog wiring wiring_digital \
+	     wiring_pulse wiring_shift
 
 
 all:		clean compile upload
@@ -60,18 +63,16 @@ compile:
 		@echo '*** Compiling...'
 		mkdir $(TMP_DIR)
 		echo '#include "WProgram.h"' > "$(TMP_DIR)/$(SKETCH_NAME).cpp"
-		cat $(SKETCH_NAME).pde >> "$(TMP_DIR)/$(SKETCH_NAME).cpp"
+		cat $(SKETCH_NAME) >> "$(TMP_DIR)/$(SKETCH_NAME).cpp"
 		@#$(CPP) -MM -mmcu=$(MCU) -DF_CPU=$(DF_CPU) $(INCLUDE) $(CPP_FLAGS) "$(TMP_DIR)/$(SKETCH_NAME).cpp" -MF "$(TMP_DIR)/$(SKETCH_NAME).d" -MT "$(TMP_DIR)/$(SKETCH_NAME).o"
 		$(CPP) -c -mmcu=$(MCU) -DF_CPU=$(DF_CPU) $(INCLUDE) $(CPP_FLAGS) "$(TMP_DIR)/$(SKETCH_NAME).cpp" -o "$(TMP_DIR)/$(SKETCH_NAME).o"
 		
 		@#Arduino core .c dependecies:
-		$(CC) -c -mmcu=$(MCU) -DF_CPU=$(DF_CPU) $(INCLUDE) $(CC_FLAGS) $(ARDUINO_CORE)/pins_arduino.c -o $(TMP_DIR)/pins_arduino.o
-		$(CC) -c -mmcu=$(MCU) -DF_CPU=$(DF_CPU) $(INCLUDE) $(CC_FLAGS) $(ARDUINO_CORE)/WInterrupts.c -o $(TMP_DIR)/WInterrupts.o
-		$(CC) -c -mmcu=$(MCU) -DF_CPU=$(DF_CPU) $(INCLUDE) $(CC_FLAGS) $(ARDUINO_CORE)/wiring_analog.c -o $(TMP_DIR)/wiring_analog.o
-		$(CC) -c -mmcu=$(MCU) -DF_CPU=$(DF_CPU) $(INCLUDE) $(CC_FLAGS) $(ARDUINO_CORE)/wiring.c -o $(TMP_DIR)/wiring.o
-		$(CC) -c -mmcu=$(MCU) -DF_CPU=$(DF_CPU) $(INCLUDE) $(CC_FLAGS) $(ARDUINO_CORE)/wiring_digital.c -o $(TMP_DIR)/wiring_digital.o
-		$(CC) -c -mmcu=$(MCU) -DF_CPU=$(DF_CPU) $(INCLUDE) $(CC_FLAGS) $(ARDUINO_CORE)/wiring_pulse.c -o $(TMP_DIR)/wiring_pulse.o
-		$(CC) -c -mmcu=$(MCU) -DF_CPU=$(DF_CPU) $(INCLUDE) $(CC_FLAGS) $(ARDUINO_CORE)/wiring_shift.c -o $(TMP_DIR)/wiring_shift.o
+		for core_file in ${CORE_C_FILES}; do \
+		    $(CC) -c -mmcu=$(MCU) -DF_CPU=$(DF_CPU) $(INCLUDE) \
+		          $(CC_FLAGS) $(ARDUINO_CORE)/$$core_file.c \
+			  -o $(TMP_DIR)/$$core_file.o; \
+		done
 
 		@#Arduino core .cpp dependecies:
 		$(CPP) -c -mmcu=$(MCU) -DF_CPU=$(DF_CPU) $(INCLUDE) $(CPP_FLAGS) $(ARDUINO_CORE)/HardwareSerial.cpp -o $(TMP_DIR)/HardwareSerial.o
