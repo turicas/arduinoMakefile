@@ -56,48 +56,63 @@ CORE_CPP_FILES=HardwareSerial main Print Tone WMath WString
 all:		clean compile upload
 
 clean:
-		@echo '*** Cleaning...'
+		@echo '# *** Cleaning...'
 		rm -rf "$(TMP_DIR)"
 
 
 compile:
-		@echo '*** Compiling...'
+		@echo '# *** Compiling...'
+
 		mkdir $(TMP_DIR)
 		echo '#include "WProgram.h"' > "$(TMP_DIR)/$(SKETCH_NAME).cpp"
 		cat $(SKETCH_NAME) >> "$(TMP_DIR)/$(SKETCH_NAME).cpp"
-		@#$(CPP) -MM -mmcu=$(MCU) -DF_CPU=$(DF_CPU) $(INCLUDE) $(CPP_FLAGS) "$(TMP_DIR)/$(SKETCH_NAME).cpp" -MF "$(TMP_DIR)/$(SKETCH_NAME).d" -MT "$(TMP_DIR)/$(SKETCH_NAME).o"
-		$(CPP) -c -mmcu=$(MCU) -DF_CPU=$(DF_CPU) $(INCLUDE) $(CPP_FLAGS) "$(TMP_DIR)/$(SKETCH_NAME).cpp" -o "$(TMP_DIR)/$(SKETCH_NAME).o"
+
+		@#$(CPP) -MM -mmcu=$(MCU) -DF_CPU=$(DF_CPU) $(INCLUDE) \
+		#         $(CPP_FLAGS) "$(TMP_DIR)/$(SKETCH_NAME).cpp" \
+		#	 -MF "$(TMP_DIR)/$(SKETCH_NAME).d" \
+		#	 -MT "$(TMP_DIR)/$(SKETCH_NAME).o"
+
+		@#Compiling the sketch file:
+		$(CPP) -c -mmcu=$(MCU) -DF_CPU=$(DF_CPU) $(INCLUDE) \
+		       $(CPP_FLAGS) "$(TMP_DIR)/$(SKETCH_NAME).cpp" \
+		       -o "$(TMP_DIR)/$(SKETCH_NAME).o"
 		
-		@#Arduino core .c dependecies:
+		@#Compiling Arduino core .c dependecies:
 		for core_c_file in ${CORE_C_FILES}; do \
 		    $(CC) -c -mmcu=$(MCU) -DF_CPU=$(DF_CPU) $(INCLUDE) \
 		          $(CC_FLAGS) $(ARDUINO_CORE)/$$core_c_file.c \
 			  -o $(TMP_DIR)/$$core_c_file.o; \
 		done
 
-		@#Arduino core .cpp dependecies:
+		@#Compiling Arduino core .cpp dependecies:
 		for core_cpp_file in ${CORE_CPP_FILES}; do \
 		    $(CPP) -c -mmcu=$(MCU) -DF_CPU=$(DF_CPU) $(INCLUDE) \
 		           $(CPP_FLAGS) $(ARDUINO_CORE)/$$core_cpp_file.cpp \
 			   -o $(TMP_DIR)/$$core_cpp_file.o; \
 		done
 
-		@#TODO: compile libraries here
-		@#TODO: use .d files to track dependencies and compile them -> change .c by -MM and use -MF to generate .d
+		@#TODO: compile external libraries here
+		@#TODO: use .d files to track dependencies and compile them
+		@#      change .c by -MM and use -MF to generate .d
 
-		$(CC) -mmcu=$(MCU) -lm -Wl,--gc-sections -Os -o $(TMP_DIR)/$(SKETCH_NAME).elf $(TMP_DIR)/*.o
-		$(AVR_OBJCOPY) -O ihex -R .eeprom $(TMP_DIR)/$(SKETCH_NAME).elf $(TMP_DIR)/$(SKETCH_NAME).hex
-		@echo '*** Compiled successfully! \o/'
+		$(CC) -mmcu=$(MCU) -lm -Wl,--gc-sections -Os \
+		      -o $(TMP_DIR)/$(SKETCH_NAME).elf $(TMP_DIR)/*.o
+		$(AVR_OBJCOPY) -O ihex -R .eeprom \
+		               $(TMP_DIR)/$(SKETCH_NAME).elf \
+			       $(TMP_DIR)/$(SKETCH_NAME).hex
+		@echo '# *** Compiled successfully! \o/'
 
 
 reset:
-		@echo '*** Resetting...'
+		@echo '# *** Resetting...'
 		stty --file $(PORT) hupcl
 		sleep 0.1
 		stty --file $(PORT) -hupcl
 		
 
 upload:
-		@echo '*** Uploading...'
-		$(AVRDUDE) -q -V -p $(MCU) -C $(AVRDUDE_CONF) -c $(BOARD_TYPE) -b $(BAUD_RATE) -P $(PORT) -U flash:w:$(TMP_DIR)/$(SKETCH_NAME).hex:i
-		@echo '*** Done - enjoy your sketch!'
+		@echo '# *** Uploading...'
+		$(AVRDUDE) -q -V -p $(MCU) -C $(AVRDUDE_CONF) -c $(BOARD_TYPE) \
+		           -b $(BAUD_RATE) -P $(PORT) \
+			   -U flash:w:$(TMP_DIR)/$(SKETCH_NAME).hex:i
+		@echo '# *** Done - enjoy your sketch!'
